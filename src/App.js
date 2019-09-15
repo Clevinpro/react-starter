@@ -1,12 +1,16 @@
 
 import React from 'react';
 import { Route } from 'react-router-dom';
-import UserForms from './containers/user-forms/userForms';
+import Home from './containers/Home/Home';
+import About from './containers/About/About';
+import Header from './components/header/Header';
 
 const App = () => {
   return (
     <div>
-      <Route exact path="/" component={UserForms} />
+      <Header />
+      <Route exact path='/' component={Home} />
+      <Route exact path='/about' component={About} />
     </div>
   );
 };

@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { FileUpload } from "primereact/fileupload";
-import { signup, multipart } from '../../services/api';
-import "primereact/resources/themes/nova-light/theme.css";
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
+import { connect } from 'react-redux';
+import { signup, multipart } from "../../services/api";
+import { AppActions } from '../../store/actions';
+
 import s from "./userForms.module.scss";
 
 class UserForm extends Component {
@@ -16,47 +15,53 @@ class UserForm extends Component {
         password: "",
         phone: "",
         age: "",
-        file: "",
+        file: ""
       }
     };
   }
 
-onInput(e) {
-  this.setState({
-    data: {
-      ...this.state.data,
-      [e.target.name]: e.target.value
-    }
-  });
-}
-
-onSubmit(e) {
-  e.preventDefault();
-  const { data } = this.state;
-  console.log('data', data);
-  const formData  = new FormData();
-  for(const key in data ) {
-    formData.append(key, data[key]);
+  onInput(e) {
+    this.setState({
+      data: {
+        ...this.state.data,
+        [e.target.name]: e.target.value
+      }
+    });
   }
-  
-  multipart(formData).then((data) => console.log(data));
-}
 
-onChangeFile(e) {
-  console.log(e.target.files[0]);
-  this.setState({
-    data: {
-      ...this.state.data,
-      file: e.target.files[0],
+  onSubmit(e) {
+    e.preventDefault();
+    const { data } = this.state;
+    console.log("data", data);
+    const formData = new FormData();
+    for (const key in data) {
+      formData.append(key, data[key]);
     }
-  })
-}
+
+    multipart(formData).then(data => console.log(data));
+  }
+
+  onChangeFile(e) {
+    console.log(e.target.files[0]);
+    this.setState({
+      data: {
+        ...this.state.data,
+        file: e.target.files[0]
+      }
+    });
+  }
+
+  componentDidMount() {
+    const { setType } = this.props;
+
+    setType('home');
+  }
 
   render() {
     return (
       <div className={s.userForm_wrapper}>
-        <form action="" onSubmit={(e) => this.onSubmit(e)}>
-          <input onChange={(e) => this.onChangeFile(e)} type="file" name="file" />
+        <form action="" onSubmit={e => this.onSubmit(e)}>
+          <input onChange={e => this.onChangeFile(e)} type="file" name="file" />
           <input
             type="email"
             name="email"
@@ -102,4 +107,4 @@ onChangeFile(e) {
   }
 }
 
-export default UserForm;
+export default connect(null, {setType: AppActions.setType}) (UserForm);
